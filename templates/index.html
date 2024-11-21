@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}待辦事項清單{% endblock %}
+
+{% block content %}
+<div class="main-content" style="display: flex; gap: 40px; padding: 20px;">
+    <style>
+        .todo-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .todo-item:hover {
+            transform: translateY(-5px);  /* 向上浮動 */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);  /* 增加陰影效果 */
+        }
+    </style>
+
+    <!-- 左側狀態欄 -->
+    <div class="status-bar" style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; width: 20%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <h2 style="text-align: center;">待處理日期</h2>
+        <ul style="list-style-type: none; padding: 0;">
+            {% for date in unique_dates %}
+            <li style="padding: 10px; background-color: #e9ecef; margin-bottom: 10px; border-radius: 4px; text-align: center; cursor: pointer;"
+                onclick="scrollToTodo('{{ date }}')">
+                {{ date }}
+            </li>
+            {% else %}
+            <li style="padding: 10px; background-color: #e9ecef; margin-bottom: 10px; border-radius: 4px; text-align: center;">
+                沒有待處理事項
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- 右側待辦事項列表 -->
+    <div class="todo-container" style="width: 70%;">
+        <h1 style="text-align: center; margin-bottom: 30px;">待辦事項清單</h1>
+
+        <!-- 新增待辦事項按鈕 -->
+        <a href="/add" style="display: block; width: 100%; text-align: center; padding: 10px; background-color: #007bff; color: white; border-radius: 5px; text-decoration: none; font-size: 1.1rem; margin-bottom: 20px; box-sizing: border-box;">新增待辦事項</a>
+        
+
+        <!-- 待辦事項清單 -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            {% for todo in todos %}
+            <a href="/todo/{{ todo.id }}" style="text-decoration: none; color: inherit;">
+                <div id="todo-{{ todo.date }}" class="todo-item" style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); width: 100%; box-sizing: border-box;">
+                    <h2 style="margin: 0 0 10px 0; color: #333;">{{ todo.title }}</h2>
+                    <p style="margin: 0 0 10px 0; color: #777;"><strong>日期:</strong> {{ todo.date }}</p>
+                    <p style="color: #555;">{{ todo.content }}</p>
+                </div>
+                
+            </a>
+            {% else %}
+            <p style="text-align: center; color: #777;">目前沒有待辦事項。</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function scrollToTodo(date) {
+        var todoElement = document.getElementById('todo-' + date);
+        if (todoElement) {
+            var headerHeight = document.querySelector('.header').offsetHeight;
+            var elementPosition = todoElement.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
+            window.scrollTo({
+                top: elementPosition,
+                behavior: 'smooth'
+            });
+        }
+    }
+</script>
+{% endblock %}
