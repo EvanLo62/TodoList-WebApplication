@@ -55,7 +55,7 @@ def register():
             return redirect(url_for('register'))
 
         # 如果使用者名稱不存在，則創建新使用者
-        new_user = User(username=username, password=generate_password_hash(password, method='sha256'))
+        new_user = User(username=username, password=generate_password_hash(password, method='pbkdf2:sha256'))
         db.session.add(new_user)
         db.session.commit()
 
